@@ -14,6 +14,11 @@ if (!file_exists('events/'.$_GET['user'].'.json')) {
     exit();
 }
 
+if (isset($_GET['save'])) {
+    setcookie('code' ,$_GET['user'] , time() + (86400 * 30) , "/");
+    header("Location: view.php?user=".$_GET['user']);
+}
+
 $events = $scheduler->get_events($_GET['user']);
 
 ?>
