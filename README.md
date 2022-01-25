@@ -6,7 +6,7 @@ Met dit project probeer ik de lesroosters makkelijker zichtbaar te maken voor le
 - ~~Persoonlijke code opslaan in Cookies~~  
 De persoonlijke code is wat jouw link uniek maakt. Om het voor jou makkelijker te maken wordt deze binnenkort opgeslagen in de Cookies. (Done)
 - Delen met vrienden  
-Momenteel kan alleen de persoonlijke link gedeeld worden. Binnenkort kun je het rooster van je vrienden naast je eigen rooster zien
+Momenteel kun alleen jij je rooster zien met je persoonlijke code. Binnenkort kun je het rooster van je vrienden naast je eigen rooster zien
 - ~~Toevoegen van account~~  
 Momenteel kunnen nieuwe leerlingen alleen een account krijgen als dit handmatig wordt toegevoegd. Binnenkort kun je via de site inschrijven (Done)
 - Diverse updates voor stijl en beveiliging  
