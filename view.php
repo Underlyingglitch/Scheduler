@@ -82,7 +82,7 @@ $events = $scheduler->get_events($user);
                                         </tr>
                                         <tr>
                                             <td><small><?php echo $c['location']; ?></small></td>
-                                            <td style="text-align: right"><?php if ($h) { ?><span data-toggle="tooltip" title="<?php echo $h; ?>">H</span><?php } ?></td>
+                                            <td style="text-align: right"><?php if ($h) { ?><span data-toggle="tooltip" title="<?php echo $h; ?>"><i class="fas fa-file-signature"></i></span><?php } ?></td>
                                         </tr>
                                     </table>
                                 </td>
