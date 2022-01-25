@@ -75,7 +75,7 @@ $events = $scheduler->get_events($user);
                                     <table class="inner-table">
                                         <tr>
                                             <td><?php echo $d; ?></td>
-                                            <td></td>
+                                            <td><?php echo str_replace(["(", ")"], "", $c['teacher']); ?></td>
                                         </tr>
                                         <tr>
                                             <td><small><?php echo $c['location']; ?></small></td>

@@ -37,7 +37,7 @@ def convert_period(x, y):
     return value
 
 
-def add_event(id, summary, location, status, start, end, stamp, description, user):
+def add_event(id, summary, location, teacher, status, start, end, stamp, description, user):
     path = './events/'+user+'.json'
     if os.path.exists(path):
         f = open(path, 'r')
@@ -48,6 +48,7 @@ def add_event(id, summary, location, status, start, end, stamp, description, use
     data[id] = {
         "summary": summary,
         "location": location,
+        "teacher": teacher,
         "status": status,
         "start": str(start),
         "end": str(end),
@@ -77,20 +78,23 @@ def get_data(_user):
                 if desc[0] == '[X]':
                     summary = "[X] "
                     location = "Lokaal " + desc[3]
+                    teacher = desc[4]
                     status = "CANCELLED"
                 elif desc[0] == '[!]':
                     summary = "[!] "
                     location = "Lokaal " + desc[3]
+                    teacher = desc[4]
                     status = "TENTATIVE"
                 else:
                     summary = ""
                     location = "Lokaal " + desc[2]
+                    teacher = desc[3]
                     status = "CONFIRMED"
                 summary += ' '.join(old_name)
                 del desc[0:4]
                 summary += ' ' + ' '.join(desc)
                 id = component.uid.valueRepr()
-                add_event(id, summary, location, status, component.dtstart.valueRepr(), component.dtend.valueRepr(), component.dtstamp.valueRepr(), component.description.valueRepr(), _user['code'])
+                add_event(id, summary, location, teacher, status, component.dtstart.valueRepr(), component.dtend.valueRepr(), component.dtstamp.valueRepr(), component.description.valueRepr(), _user['code'])
 
 
 if __name__ == "__main__":
