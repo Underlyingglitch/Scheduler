@@ -43,11 +43,11 @@ $events = $scheduler->get_events($user);
                 <table class="table">
                     <tr>
                         <th></th>
-                        <th>Ma</th>
-                        <th>Di</th>
-                        <th>Wo</th>
-                        <th>Do</th>
-                        <th>Vr</th>
+                        <th>Maandag</th>
+                        <th>Dinsdag</th>
+                        <th>Woensdag</th>
+                        <th>Donderdag</th>
+                        <th>Vrijdag</th>
                     <tr>
                     <?php foreach ($events as $nr => $p) { ?>
                         <tr>
