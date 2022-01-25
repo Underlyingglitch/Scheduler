@@ -4,7 +4,7 @@ if ($_SERVER['HTTP_HOST'] != "scheduler.rickokkersen.ga") {
     header("Location: https://scheduler.rickokkersen.ga".str_replace("/scheduler", "", $_SERVER['REQUEST_URI']));
 }
 
-class Scheduler {
+class Scheduler extends Functions {
     public $users = [];
 
     private $codes = [];
@@ -14,14 +14,6 @@ class Scheduler {
         $this->users = json_decode(file_get_contents('config/users.json'), true);
         $this->timings = json_decode(file_get_contents('config/timings.json'), true);
         foreach($this->users as $u){$this->codes[]=$u['code'];}
-    }
-
-    function date_in_week($d) {
-        return (date("Y-m-d", strtotime($d)) > date("Y-m-d", strtotime('sunday last week')) && date("Y-m-d", strtotime($d)) < date("Y-m-d", strtotime('sunday this week')));
-    }
-
-    function day_of_week($d) {
-        return date('w', strtotime($d))-1;
     }
 
     function get_user($u) {
@@ -52,9 +44,9 @@ class Scheduler {
         $e_dertig=$e_vijftig=array_fill(0,9,array_fill(0,5,0));
         foreach ($d as $ev){
             $date=explode(" ",$ev['start'])[0];
-            if ($this->date_in_week($date)) {
-                if($ev['vijftig']!=0){$e_vijftig[$ev['vijftig']-1][$this->day_of_week($date)]=$ev;}
-                if($ev['dertig']!=0){$e_dertig[$ev['dertig']-1][$this->day_of_week($date)]=$ev;}
+            if (Functions::date_in_week($date)) {
+                if($ev['vijftig']!=0){$e_vijftig[$ev['vijftig']-1][Functions::day_of_week($date)]=$ev;}
+                if($ev['dertig']!=0){$e_dertig[$ev['dertig']-1][Functions::day_of_week($date)]=$ev;}
             }
         }
         return $e_dertig;
@@ -82,6 +74,53 @@ class Scheduler {
                 return $u['name'];
             }
         }
+    }
+
+    function get_homework($x) {
+        $a = explode(":", $x);
+        if (count($a) > 1 && strpos($a[0], '(komt van') == false) {
+            unset($a[0]);
+            return str_replace(
+                [
+                    ' De les is verplaatst',
+                    ' Les vervalt'
+                ],
+                "",
+                preg_replace(
+                    [
+                        '/(\([A-Za-z]{3}[0-9]{1,2}\))/',
+                        '/\\\\r/',
+                        '/.(\(komt van).*?\./'
+                    ],
+                    "",
+                    implode(":", $a)
+                )
+            );
+        }
+        return;
+    }
+}
+
+class Functions {
+
+    function date_in_week($d) {
+        return (date("Y-m-d", strtotime($d)) > date("Y-m-d", strtotime('sunday last week')) && date("Y-m-d", strtotime($d)) < date("Y-m-d", strtotime('sunday this week')));
+    }
+
+    function day_of_week($d) {
+        return date('w', strtotime($d))-1;
+    }
+
+    function delete_all_between($beginning, $end, $string) {
+        $beginningPos = strpos($string, $beginning);
+        $endPos = strpos($string, $end);
+        if ($beginningPos === false || $endPos === false) {
+            return $string;
+        }
+      
+        $textToDelete = substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos);
+      
+        return $this->delete_all_between($beginning, $end, str_replace($textToDelete, '', $string)); // recursion to ensure all occurrences are replaced
     }
 }
 

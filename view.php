@@ -35,6 +35,8 @@ $events = $scheduler->get_events($user);
         <!-- Bootstrap + Popper.JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     
+        <script src="https://kit.fontawesome.com/4e658c380b.js" crossorigin="anonymous"></script>
+
         <link rel="stylesheet" href="dist/css/style.css" \>
     </head>
     <body>
@@ -57,6 +59,7 @@ $events = $scheduler->get_events($user);
                             <?php foreach ($p as $c) { ?>
                                 <?php
                                 $x = explode(" ", $c['description']);
+                                $h = $scheduler->get_homework($c['summary']);
                                 switch ($x[0]) {
                                     case "[X]":
                                         $p = "style='background-color: red'";
@@ -75,10 +78,11 @@ $events = $scheduler->get_events($user);
                                     <table class="inner-table">
                                         <tr>
                                             <td><?php echo $d; ?></td>
-                                            <td><?php echo str_replace(["(", ")"], "", $c['teacher']); ?></td>
+                                            <td style="text-align: right"><?php echo str_replace(["(", ")"], "", $c['teacher']); ?></td>
                                         </tr>
                                         <tr>
                                             <td><small><?php echo $c['location']; ?></small></td>
+                                            <td style="text-align: right"><?php if ($h) { ?><span data-toggle="tooltip" title="<?php echo $h; ?>">H</span><?php } ?></td>
                                         </tr>
                                     </table>
                                 </td>
