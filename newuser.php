@@ -10,7 +10,7 @@ $scheduler = new Scheduler();
 
 $code = $scheduler->new_code();
 $name = htmlspecialchars(stripslashes($_POST['name']));
-$url = htmlspecialchars(stripslashes($_POST['url']));
+$url = $_POST['url'];
 
 if (empty($name)) {
     echo "Vul een naam in!";
