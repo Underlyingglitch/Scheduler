@@ -8,9 +8,11 @@ class Scheduler {
     public $users = [];
 
     private $codes = [];
+    private $timings = [];
 
     function __construct() {
         $this->users = json_decode(file_get_contents('config/users.json'), true);
+        $this->timings = json_decode(file_get_contents('config/timings.json'), true);
         foreach($this->users as $u){$this->codes[]=$u['code'];}
     }
 
@@ -72,6 +74,14 @@ class Scheduler {
             return true;
         }
         return;
+    }
+
+    function get_name($x) {
+        foreach ($this->users as $u) {
+            if ($u['code'] == $x) {
+                return $u['name'];
+            }
+        }
     }
 }
 

@@ -34,6 +34,8 @@ $events = $scheduler->get_events($user);
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <!-- Bootstrap + Popper.JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    
+        <link rel="stylesheet" href="dist/css/style.css" \>
     </head>
     <body>
         <main class="container">
@@ -55,15 +57,31 @@ $events = $scheduler->get_events($user);
                             <?php foreach ($p as $c) { ?>
                                 <?php
                                 $x = explode(" ", $c['description']);
-                                if ($x[0] == "[X]") {
-                                    echo "<td style='background-color: red'>".$x[1]."</td>";
-                                } elseif ($x[0] == "[!]") {
-                                    preg_match('/([0-9]{2}(?=\))).*/', $c['description'], $m);
-                                    echo "<td style='background-color: orange' data-toggle='tooltip' title='".substr($m[0], 3)."'>".$x[0].$x[1]."</td>";
-                                } else {
-                                    echo "<td>".$x[0]."</td>";
+                                switch ($x[0]) {
+                                    case "[X]":
+                                        $p = "style='background-color: red'";
+                                        $d = $x[1];
+                                        break;
+                                    case "[!]":
+                                        preg_match('/([0-9]{2}(?=\))).*/', $c['description'], $m);
+                                        $p = "style='background-color: orange' data-toggle='tooltip' title='".substr($m[0], 3)."'";
+                                        $d = $x[1];
+                                        break;
+                                    default:
+                                        $d = $x[0];
                                 }
                                 ?>
+                                <td <?php echo $p; ?>>
+                                    <table class="inner-table">
+                                        <tr>
+                                            <td><?php echo $d; ?></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td><small><?php echo $c['location']; ?></small></td>
+                                        </tr>
+                                    </table>
+                                </td>
                             <?php } ?>
                         </tr>
                     <?php } ?>
