@@ -1,8 +1,11 @@
+from datetime import datetime
 import vobject
 from urllib.request import urlopen, Request
 import json
 import os
 import requests
+
+users = []
 
 
 def convert_period(x, y):
@@ -95,9 +98,13 @@ def get_data(_user):
                 summary += ' ' + ' '.join(desc)
                 id = component.uid.valueRepr()
                 add_event(id, summary, location, teacher, status, component.dtstart.valueRepr(), component.dtend.valueRepr(), component.dtstamp.valueRepr(), component.description.valueRepr(), _user['code'])
-
+    user = _user
+    user['last_updated'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    users.append(user)
 
 if __name__ == "__main__":
     with open('./config/users.json', 'r') as f:
         for user in json.loads(f.read()):
             get_data(user)
+    with open('./config/users.json', 'w') as f:
+        f.write(json.dumps(users))
