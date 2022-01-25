@@ -38,16 +38,16 @@ $events = $scheduler->get_events($_GET['user']);
                 <th>Do</th>
                 <th>Vr</th>
             <tr>
-            <?php foreach ($events as $nr => $period) { ?>
+            <?php foreach ($events as $nr => $p) { ?>
                 <tr>
                     <th><?php echo $nr+1; ?></th>
-                    <?php foreach ($period as $course) { ?>
+                    <?php foreach ($p as $c) { ?>
                         <?php
-                        $x = explode(" ", $course['description']);
+                        $x = explode(" ", $c['description']);
                         if ($x[0] == "[X]") {
                             echo "<td style='background-color: red'>".$x[1]."</td>";
                         } elseif ($x[0] == "[!]") {
-                            preg_match('/([0-9]{2}(?=\))).*/', $course['description'], $m);
+                            preg_match('/([0-9]{2}(?=\))).*/', $c['description'], $m);
                             echo "<td style='background-color: orange'><span class='tooltip'>".$x[0].$x[1]."<span class='tooltiptext'>".substr($m[0], 3)."</span></span></td>";
                         } else {
                             echo "<td>".$x[0]."</td>";
