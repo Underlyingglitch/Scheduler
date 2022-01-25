@@ -34,7 +34,7 @@ class Scheduler {
         }
     }
 
-    function generate_string($n) {
+    private function generate_string($n) {
         $c = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $r = '';
         for ($i = 0; $i < $n; $i++) {
@@ -64,6 +64,22 @@ class Scheduler {
             }
         }
         return $e_dertig;
+    }
+
+    function create_user($c, $n, $u) {
+        $f = json_decode(file_get_contents('config/users.json'), true);
+        $f[] = ["url" => str_replace("webcal", "https", $u), "name" => $n, "code" => $c];
+        if (file_put_contents('config/users.json', json_encode($f))) {
+            return true;
+        }
+        return;
+    }
+
+    function valid_url($u) {
+        if (strpos($u, 'webcal://lvo.itslearning.com/Calendar/CalendarFeed.ashx') !== false) {
+            return true;
+        }
+        return;
     }
 }
 

@@ -4,29 +4,31 @@ include "functions.php";
 
 $scheduler = new Scheduler();
 
-if (!$scheduler->get_user($_GET['user'])) {
+$user = trim(htmlspecialchars(stripslashes($_GET['user'])));
+
+if (!$scheduler->get_user($user)) {
     header("Location: index.php?invalid");
     exit();
 }
 
-if (!file_exists('events/'.$_GET['user'].'.json')) {
+if (!file_exists('events/'.$user.'.json')) {
     header("Location: index.php?notready");
     exit();
 }
 
 if (isset($_GET['save'])) {
-    setcookie('code' ,$_GET['user'] , time() + (86400 * 30) , "/");
-    header("Location: view.php?user=".$_GET['user']);
+    setcookie('code' ,$user , time() + (86400 * 30) , "/");
+    header("Location: view.php?user=".$user);
 }
 
-$events = $scheduler->get_events($_GET['user']);
+$events = $scheduler->get_events($user);
 
 ?>
 
 <html>
     <head>
         <title>Bekijk rooster</title>
-        <link rel="stylesheet" href="style.css" \>
+        <link rel="stylesheet" href="dist/css/style.css" \>
     </head>
     <body>
         <table border="1">

@@ -54,10 +54,10 @@ include "functions.php";
                 <form method="post" action="newuser.php">
                     <div class="row">
                         <div class="col-md-4">
-                            <input class="form-control" type="text" placeholder="Naam">
+                            <input class="form-control" type="text" placeholder="Naam" name="name">
                         </div>
                         <div class="col-md-4">
-                            <input class="form-control" type="text" placeholder="URL">
+                            <input class="form-control" type="text" placeholder="URL" name="url">
                         </div>
                         <div class="col-md-4">
                             <input class="btn btn-primary" type="submit" name="submit" value="Maak profiel">
