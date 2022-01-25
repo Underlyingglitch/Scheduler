@@ -7,18 +7,15 @@ if ($_SERVER['HTTP_HOST'] != "scheduler.rickokkersen.ga") {
 class Scheduler {
     public $users = [];
 
-    private $codes=[];
+    private $codes = [];
 
     function __construct() {
-        foreach($this->users as $u){$this->codes[]=$u['code'];}
         $this->users = json_decode(file_get_contents('config/users.json'), true);
+        foreach($this->users as $u){$this->codes[]=$u['code'];}
     }
 
     function date_in_week($d) {
-        if(date("Y-m-d", strtotime($d)) > date("Y-m-d", strtotime('sunday last week')) && date("Y-m-d", strtotime($d)) < date("Y-m-d", strtotime('sunday this week'))) {
-            return true;
-        }
-        return false;
+        return (date("Y-m-d", strtotime($d)) > date("Y-m-d", strtotime('sunday last week')) && date("Y-m-d", strtotime($d)) < date("Y-m-d", strtotime('sunday this week')));
     }
 
     function day_of_week($d) {
@@ -26,12 +23,7 @@ class Scheduler {
     }
 
     function get_user($u) {
-        foreach ($this->users as $x) {
-            if ($u == $x['code']) {
-                return $x;
-            }
-            return false;
-        }
+        return in_array($u, $this->codes);
     }
 
     private function generate_string($n) {
