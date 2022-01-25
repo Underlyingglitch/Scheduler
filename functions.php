@@ -1,5 +1,9 @@
 <?php
 
+if ($_SERVER['HTTP_HOST'] != "scheduler.rickokkersen.ga") {
+    header("Location: https://scheduler.rickokkersen.ga".str_replace("/scheduler", "", $_SERVER['REQUEST_URI']));
+}
+
 class Scheduler {
     public $users = [];
 
@@ -42,7 +46,7 @@ class Scheduler {
     function new_code() {
         while (true) {
             $c = $this->generate_string(20);
-            if (!in_array($c, $codes)) {
+            if (!in_array($c, $this->codes)) {
                 return $c;
             }
         }
