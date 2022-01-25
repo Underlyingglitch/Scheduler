@@ -26,6 +26,7 @@ $events = $scheduler->get_events($_GET['user']);
 <html>
     <head>
         <title>Bekijk rooster</title>
+        <link rel="stylesheet" href="style.css" \>
     </head>
     <body>
         <table border="1">
@@ -46,7 +47,8 @@ $events = $scheduler->get_events($_GET['user']);
                         if ($x[0] == "[X]") {
                             echo "<td style='background-color: red'>".$x[1]."</td>";
                         } elseif ($x[0] == "[!]") {
-                            echo "<td style='background-color: orange'>".$x[0].$x[1]."</td>";
+                            preg_match('/([0-9]{2}(?=\))).*/', $course['description'], $m);
+                            echo "<td style='background-color: orange'><span class='tooltip'>".$x[0].$x[1]."<span class='tooltiptext'>".substr($m[0], 3)."</span></span></td>";
                         } else {
                             echo "<td>".$x[0]."</td>";
                         }
