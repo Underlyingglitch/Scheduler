@@ -89,7 +89,7 @@ $events = $scheduler->get_events($hs);
                                     <table class="inner-table">
                                         <tr <?php echo $p; ?>>
                                             <td><?php echo $d; ?></td>
-                                            <td style="text-align: right"><?php echo str_replace(["(", ")"], "", $c['teacher']); ?></td>
+                                            <td style="text-align: right"><?php echo str_replace(["(", ")", "\\r"], "", $c['teacher']); ?></td>
                                         </tr>
                                         <tr>
                                             <td><small><?php echo $c['location']; ?></small></td>
