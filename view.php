@@ -3,7 +3,7 @@
 include "functions.php";
 
 $user = trim(htmlspecialchars(stripslashes($_GET['user'])));
-$scheduler = new Scheduler($user);
+$scheduler = new Scheduler($user, isset($_GET['next']));
 
 if (!$scheduler->get_user()) {
     header("Location: index.php?invalid");
