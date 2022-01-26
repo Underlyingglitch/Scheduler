@@ -46,6 +46,14 @@ $events = $scheduler->get_events($user, $scheduler->get_schedule($user));
                 <br>
                 <table class="table">
                     <tr>
+                        <th><a href="view.php?user=<?php echo $_GET['user']; ?>"><i class="fas fa-arrow-circle-left fa-2x"></i></a></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th style="text-align: right"><a href="view.php?user=<?php echo $_GET['user']; ?>&next"><i id="toggleNext" class="fas fa-arrow-circle-right fa-2x"></i></a></th>
+                    </tr>
+                    <tr>
                         <th></th>
                         <th>Maandag</th>
                         <th>Dinsdag</th>
