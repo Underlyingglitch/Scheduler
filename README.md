@@ -10,7 +10,13 @@ Momenteel kun alleen jij je rooster zien met je persoonlijke code. Binnenkort ku
 - ~~Toevoegen van account~~  
 Momenteel kunnen nieuwe leerlingen alleen een account krijgen als dit handmatig wordt toegevoegd. Binnenkort kun je via de site inschrijven (Done)
 - Diverse updates voor stijl en beveiliging  
-Dit project is in zeer korte tijd gemaakt en is bij lange na niet wat ik ervan had willen maken
+Dit project is in zeer korte tijd gemaakt en is bij lange na niet wat ik ervan had willen maken (In progress)
+- Mobiele website/app  
+Deze webpagina is momenteel niet erg geschikt voor telefoons. Uiteraard moet dit uiteindelijk op alle apparaten goed uitzien
+- Dagweergave  
+Momenteel is het rooster alleen per week te zien en niet per dag. Zeker in combinatie met de "Delen met vrienden"-functie is het praktisch een wat grotere weergave per dag te hebben.
+- Vooruitkijken naar volgende week  
+Doorklikken naar volgende week
 
 ## Bugs en fouten
 Rapporteer bugs en fouten aub via de Issues in GitHub of fix ze zelf met een Pull request
