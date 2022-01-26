@@ -20,8 +20,8 @@ if (isset($_GET['save'])) {
     setcookie('code' ,$user , time() + (86400 * 30) , "/");
     header("Location: view.php?user=".$user);
 }
-
-$events = $scheduler->get_events($user);
+$hs = $scheduler->get_schedule($user);
+$events = $scheduler->get_events($user, $scheduler->get_schedule($user));
 
 ?>
 
@@ -62,15 +62,17 @@ $events = $scheduler->get_events($user);
                                 $h = $scheduler->get_homework($c['summary']);
                                 switch ($x[0]) {
                                     case "[X]":
-                                        $p = "style='background-color: red'";
-                                        $d = $x[1];
+                                        preg_match('/([0-9]{2}(?=\))).*/', $c['description'], $m);
+                                        $p = "style='background-color: red' data-toggle='tooltip' title='".substr($m[0], 3)."'";
+                                        $d = ($x[1] == "[!]")?$x[2]:$x[1];
                                         break;
                                     case "[!]":
                                         preg_match('/([0-9]{2}(?=\))).*/', $c['description'], $m);
-                                        $p = "style='background-color: orange' data-toggle='tooltip' title='".substr($m[0], 3)."'";
+                                        $p = "style='background-color: orange' data-toggle='tooltip' title='".str_replace("komt van", "was",substr($m[0], 3))."'";
                                         $d = $x[1];
                                         break;
                                     default:
+                                        $p = "";
                                         $d = $x[0];
                                 }
                                 ?>
