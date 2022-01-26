@@ -8,6 +8,8 @@ class Scheduler extends Functions {
     public $users = [];
 
     private $user;
+    private $userdata;
+    private $userevents;
 
     private $codes = [];
     private $timings = [];
@@ -15,7 +17,13 @@ class Scheduler extends Functions {
     function __construct($_user, $_next) {
         $this->users = json_decode(file_get_contents('config/users.json'), true);
         $this->timings = json_decode(file_get_contents('config/timings.json'), true);
-        foreach($this->users as $u){$this->codes[]=$u['code'];}
+        $this->userevents=json_decode(file_get_contents('events/'.$_user.'.json'),true);
+        foreach($this->users as $u){
+            $this->codes[]=$u['code'];
+            if ($u['code'] == $_user) {
+                $this->userdata = $u;
+            }
+        }
         $this->user = $_user;
         Functions::__construct($_next);
     }
@@ -43,10 +51,9 @@ class Scheduler extends Functions {
     }
 
     function get_events($hs) {
-        $d=json_decode(file_get_contents('events/'.$this->user.'.json'),true);
         $e=[];
         $e=array_fill(0,9,array_fill(0,5,0));
-        foreach ($d as $ev){
+        foreach ($this->userevents as $ev){
             $date=explode(" ",$ev['start'])[0];
             if (Functions::date_in_week($date)) {
                 if ($ev[($hs)?'dertig':'vijftig']!=0) {
@@ -74,11 +81,7 @@ class Scheduler extends Functions {
     }
 
     function get_name($x) {
-        foreach ($this->users as $u) {
-            if ($u['code'] == $x) {
-                return $u['name'];
-            }
-        }
+        return $this->userdata['name'];
     }
 
     function get_homework($x) {
@@ -106,13 +109,16 @@ class Scheduler extends Functions {
     }
 
     function get_schedule() {
-        $d=json_decode(file_get_contents('events/'.$this->user.'.json'),true);
-        foreach ($d as $e) {
+        foreach ($this->userevents as $e) {
             if (Functions::date_in_week(explode(" ",$e['start'])[0]) && $e['vijftig'] == 0) {
                 return true;
             }
         }
         return false;
+    }
+
+    function get_last_update() {
+        return $this->userdata['last_updated'];
     }
 }
 
@@ -133,18 +139,6 @@ class Functions {
 
     function day_of_week($d) {
         return date('w', strtotime($d))-1;
-    }
-
-    function delete_all_between($beginning, $end, $string) {
-        $beginningPos = strpos($string, $beginning);
-        $endPos = strpos($string, $end);
-        if ($beginningPos === false || $endPos === false) {
-            return $string;
-        }
-      
-        $textToDelete = substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos);
-      
-        return $this->delete_all_between($beginning, $end, str_replace($textToDelete, '', $string)); // recursion to ensure all occurrences are replaced
     }
 }
 

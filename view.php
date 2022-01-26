@@ -42,15 +42,15 @@ $events = $scheduler->get_events($hs);
         <main class="container">
             <div class="bg-light p-5 rounded mt-3">
                 <h1 class="text-center">Rooster van <?php echo $scheduler->get_name($user); ?></h1>
-                <br>
+                <h4 class="text-center"><sub style="color: grey">Laatste update: <?php echo $scheduler->get_last_update(); ?></sub></h4>
                 <table class="table">
                     <tr>
-                        <th><a href="view.php?user=<?php echo $_GET['user']; ?>"><i class="fas fa-arrow-circle-left fa-2x"></i></a></th>
+                        <th><a <?php if (isset($_GET['next'])) { ?>href="view.php?user=<?php echo $_GET['user']; ?>"<?php } ?>><i class="fas fa-arrow-circle-left fa-2x"></i></a></th>
                         <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th style="text-align: right"><a href="view.php?user=<?php echo $_GET['user']; ?>&next"><i id="toggleNext" class="fas fa-arrow-circle-right fa-2x"></i></a></th>
+                        <th style="text-align: right"><a <?php if (!isset($_GET['next'])) { ?>href="view.php?user=<?php echo $_GET['user']; ?>&next"<?php } ?>><i id="toggleNext" class="fas fa-arrow-circle-right fa-2x"></i></a></th>
                     </tr>
                     <tr>
                         <th></th>
