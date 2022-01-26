@@ -80,8 +80,11 @@ def get_data(_user):
                 del old_name[0]
                 if desc[0] == '[X]':
                     summary = "[X] "
-                    location = "Lokaal " + desc[3]
-                    teacher = desc[4]
+                    n = 3
+                    if desc[1] == "[!]":
+                        n=4
+                    location = "Lokaal " + desc[n]
+                    teacher = desc[n+1]
                     status = "CANCELLED"
                 elif desc[0] == '[!]':
                     summary = "[!] "
