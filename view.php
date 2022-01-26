@@ -63,28 +63,30 @@ $events = $scheduler->get_events($user, $scheduler->get_schedule($user));
                                 switch ($x[0]) {
                                     case "[X]":
                                         preg_match('/([0-9]{2}(?=\))).*/', $c['description'], $m);
-                                        $p = "style='background-color: red' data-toggle='tooltip' title='".substr($m[0], 3)."'";
+                                        $s = "style='background-color: red'";
+                                        $p = "data-toggle='tooltip' title='".substr($m[0], 3)."'";
                                         $d = ($x[1] == "[!]")?$x[2]:$x[1];
                                         break;
                                     case "[!]":
                                         preg_match('/([0-9]{2}(?=\))).*/', $c['description'], $m);
-                                        $p = "style='background-color: orange' data-toggle='tooltip' title='".str_replace("komt van", "was",substr($m[0], 3))."'";
+                                        $s = "style='background-color: orange'";
+                                        $p = "data-toggle='tooltip' title='".str_replace(["komt van","\\r"], ["was", ""],substr($m[0], 3))."'";
                                         $d = $x[1];
                                         break;
                                     default:
-                                        $p = "";
+                                        $p=$s = "";
                                         $d = $x[0];
                                 }
                                 ?>
-                                <td <?php echo $p; ?>>
+                                <td class="cell" <?php echo $s; ?>>
                                     <table class="inner-table">
-                                        <tr>
+                                        <tr <?php echo $p; ?>>
                                             <td><?php echo $d; ?></td>
                                             <td style="text-align: right"><?php echo str_replace(["(", ")"], "", $c['teacher']); ?></td>
                                         </tr>
                                         <tr>
                                             <td><small><?php echo $c['location']; ?></small></td>
-                                            <td style="text-align: right"><?php if ($h) { ?><span data-toggle="tooltip" title="<?php echo $h; ?>"><i class="fas fa-file-signature"></i></span><?php } ?></td>
+                                            <td style="text-align: right"><?php if ($h) { ?><span data-toggle="popover" class="homework-icon" title="<?php echo $h; ?>"><i class="fas fa-file-signature"></i></span><?php } ?></td>
                                         </tr>
                                     </table>
                                 </td>

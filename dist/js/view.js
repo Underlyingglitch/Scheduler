@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    $("body").tooltip({
-        selector: '[data-toggle=tooltip]'
-    });
+    $('[data-toggle=tooltip]').tooltip();
+    $('[data-toggle="popover"]').popover();
 });
