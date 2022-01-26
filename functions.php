@@ -7,17 +7,20 @@ if ($_SERVER['HTTP_HOST'] != "scheduler.rickokkersen.ga") {
 class Scheduler extends Functions {
     public $users = [];
 
+    public $user;
+
     private $codes = [];
     private $timings = [];
 
-    function __construct() {
+    function __construct($_user) {
         $this->users = json_decode(file_get_contents('config/users.json'), true);
         $this->timings = json_decode(file_get_contents('config/timings.json'), true);
         foreach($this->users as $u){$this->codes[]=$u['code'];}
+        $this->user = $_user;
     }
 
-    function get_user($u) {
-        return in_array($u, $this->codes);
+    function get_user() {
+        return in_array($this->user, $this->codes);
     }
 
     private function generate_string($n) {
@@ -38,8 +41,8 @@ class Scheduler extends Functions {
         }
     }
 
-    function get_events($x, $hs) {
-        $d=json_decode(file_get_contents('events/'.$x.'.json'),true);
+    function get_events($hs) {
+        $d=json_decode(file_get_contents('events/'.$this->user.'.json'),true);
         $e=[];
         $e=array_fill(0,9,array_fill(0,5,0));
         foreach ($d as $ev){
@@ -101,8 +104,8 @@ class Scheduler extends Functions {
         return;
     }
 
-    function get_schedule($u) {
-        $d=json_decode(file_get_contents('events/'.$u.'.json'),true);
+    function get_schedule() {
+        $d=json_decode(file_get_contents('events/'.$this->user.'.json'),true);
         foreach ($d as $e) {
             if (Functions::date_in_week(explode(" ",$e['start'])[0]) && $e['vijftig'] == 0) {
                 return true;

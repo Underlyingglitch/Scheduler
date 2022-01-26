@@ -2,11 +2,10 @@
 
 include "functions.php";
 
-$scheduler = new Scheduler();
-
 $user = trim(htmlspecialchars(stripslashes($_GET['user'])));
+$scheduler = new Scheduler($user);
 
-if (!$scheduler->get_user($user)) {
+if (!$scheduler->get_user()) {
     header("Location: index.php?invalid");
     exit();
 }
@@ -20,8 +19,8 @@ if (isset($_GET['save'])) {
     setcookie('code' ,$user , time() + (86400 * 30) , "/");
     header("Location: view.php?user=".$user);
 }
-$hs = $scheduler->get_schedule($user);
-$events = $scheduler->get_events($user, $scheduler->get_schedule($user));
+$hs = $scheduler->get_schedule();
+$events = $scheduler->get_events($hs);
 
 ?>
 
