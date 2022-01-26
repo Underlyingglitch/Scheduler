@@ -38,18 +38,19 @@ class Scheduler extends Functions {
         }
     }
 
-    function get_events($x) {
+    function get_events($x, $hs) {
         $d=json_decode(file_get_contents('events/'.$x.'.json'),true);
-        $e_dertig=$e_vijftig=[];
-        $e_dertig=$e_vijftig=array_fill(0,9,array_fill(0,5,0));
+        $e=[];
+        $e=array_fill(0,9,array_fill(0,5,0));
         foreach ($d as $ev){
             $date=explode(" ",$ev['start'])[0];
             if (Functions::date_in_week($date)) {
-                if($ev['vijftig']!=0){$e_vijftig[$ev['vijftig']-1][Functions::day_of_week($date)]=$ev;}
-                if($ev['dertig']!=0){$e_dertig[$ev['dertig']-1][Functions::day_of_week($date)]=$ev;}
+                if ($ev[($hs)?'dertig':'vijftig']!=0) {
+                    $e[$ev[($hs)?'dertig':'vijftig']-1][Functions::day_of_week($date)]=$ev;
+                }
             }
         }
-        return $e_dertig;
+        return $e;
     }
 
     function create_user($c, $n, $u) {
@@ -98,6 +99,16 @@ class Scheduler extends Functions {
             );
         }
         return;
+    }
+
+    function get_schedule($u) {
+        $d=json_decode(file_get_contents('events/'.$u.'.json'),true);
+        foreach ($d as $e) {
+            if (Functions::date_in_week(explode(" ",$e['start'])[0]) && $e['vijftig'] == 0) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
