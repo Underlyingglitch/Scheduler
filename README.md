@@ -2,6 +2,9 @@
 
 Met dit project probeer ik de lesroosters makkelijker zichtbaar te maken voor leerlingen. Iedere leerling krijgt zijn eigen persoonlijke pagina en kan zelf kiezen of hij/zij deze pagina met anderen deelt. Instellen van de persoonlijke pagina is erg makkelijk en is een eenmalige stap. De roosters worden iedere 30 minuten geupdate en lessen die uitvallen/wijzigingen zijn duidelijk aangegeven.
 
+## Let op
+Dit is een prive project voor mijn eigen school. Alle code, inclusief de Discord bot en login integratie, is hierop gebasseerd. Dit project is zonder hevige aanpassing niet te gebruiken in andere applicaties.
+
 ## TODO
 - ~~Persoonlijke code opslaan in Cookies~~  
 De persoonlijke code is wat jouw link uniek maakt. Om het voor jou makkelijker te maken wordt deze binnenkort opgeslagen in de Cookies. (Done)
