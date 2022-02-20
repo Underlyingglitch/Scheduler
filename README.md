@@ -15,8 +15,12 @@ Dit project is in zeer korte tijd gemaakt en is bij lange na niet wat ik ervan h
 Deze webpagina is momenteel niet erg geschikt voor telefoons. Uiteraard moet dit uiteindelijk op alle apparaten goed uitzien
 - Dagweergave  
 Momenteel is het rooster alleen per week te zien en niet per dag. Zeker in combinatie met de "Delen met vrienden"-functie is het praktisch een wat grotere weergave per dag te hebben.
-- Vooruitkijken naar volgende week  
+- ~~Vooruitkijken naar volgende week~~  
 Doorklikken naar volgende week
+- Discord bot  
+Discord bot om updates automatisch in een kanaal te posten
+- Discord login integratie  
+Weg met de persoonlijke code. In plaats daarvan inloggen met Discord. Voordelen zijn dat inloggen door Discord veilig geregeld wordt, dat de gebruikers automatisch gelinkt worden en ook in Discord zeker weten dat hun data beschikbaar is
 
 ## Bugs en fouten
 Rapporteer bugs en fouten aub via de Issues in GitHub of fix ze zelf met een Pull request
