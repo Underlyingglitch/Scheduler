@@ -10,7 +10,7 @@ if (!$scheduler->get_user()) {
     exit();
 }
 
-if (!file_exists('events/'.$user.'.json')) {
+if (!file_exists('../events/'.$user.'.json')) {
     header("Location: index.php?notready");
     exit();
 }
@@ -45,12 +45,12 @@ $events = $scheduler->get_events($hs);
                 <h4 class="text-center"><sub style="color: grey">Laatste update: <?php echo $scheduler->get_last_update(); ?></sub></h4>
                 <table class="table">
                     <tr>
-                        <th><a <?php if (isset($_GET['next'])) { ?>href="view.php?user=<?php echo $_GET['user']; ?>"<?php } ?>><i class="fas fa-arrow-circle-left fa-2x"></i></a></th>
+                        <th><a <?php if (isset($_GET['next'])) { ?>href="view.php?user=<?php echo htmlspecialchars(stripslashes($_GET['user'])); ?>"<?php } ?>><i class="fas fa-arrow-circle-left fa-2x"></i></a></th>
                         <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th style="text-align: right"><a <?php if (!isset($_GET['next'])) { ?>href="view.php?user=<?php echo $_GET['user']; ?>&next"<?php } ?>><i id="toggleNext" class="fas fa-arrow-circle-right fa-2x"></i></a></th>
+                        <th style="text-align: right"><a <?php if (!isset($_GET['next'])) { ?>href="view.php?user=<?php echo htmlspecialchars(stripslashes($_GET['user'])); ?>&next"<?php } ?>><i id="toggleNext" class="fas fa-arrow-circle-right fa-2x"></i></a></th>
                     </tr>
                     <tr>
                         <th></th>

@@ -15,9 +15,9 @@ class Scheduler extends Functions {
     private $timings = [];
 
     function __construct($_user, $_next) {
-        $this->users = json_decode(file_get_contents('config/users.json'), true);
-        $this->timings = json_decode(file_get_contents('config/timings.json'), true);
-        $this->userevents=json_decode(file_get_contents('events/'.$_user.'.json'),true);
+        $this->users = json_decode(file_get_contents('../config/users.json'), true);
+        $this->timings = json_decode(file_get_contents('../config/timings.json'), true);
+        $this->userevents=json_decode(file_get_contents('../events/'.$_user.'.json'),true);
         foreach($this->users as $u){
             $this->codes[]=$u['code'];
             if ($u['code'] == $_user) {
@@ -65,9 +65,9 @@ class Scheduler extends Functions {
     }
 
     function create_user($c, $n, $u) {
-        $f = json_decode(file_get_contents('config/users.json'), true);
+        $f = json_decode(file_get_contents('../config/users.json'), true);
         $f[] = ["url" => str_replace("webcal", "https", $u), "name" => $n, "code" => $c];
-        if (file_put_contents('config/users.json', json_encode($f))) {
+        if (file_put_contents('../config/users.json', json_encode($f))) {
             return true;
         }
         return;
