@@ -2,6 +2,16 @@
 include "functions.php";
 
 $changes = json_decode(file_get_contents('../data/changes_web.json'), true);
+$groups = [];
+
+foreach (json_decode(file_get_contents('../data/groups.json'), true) as $group) {
+    $a = explode(';', $group);
+    foreach($a as $b) {
+        $groups[] = $b;
+    }
+}
+sort($groups);
+
 ?>
 
 <html>
@@ -28,7 +38,7 @@ $changes = json_decode(file_get_contents('../data/changes_web.json'), true);
                     <input class="form-check-input" type="checkbox" name="save"> Bewaar code (gebruikt cookies)
                 </form> -->
                 <!-- <?php if (isset($_COOKIE['code'])) { ?><a href="view.php?user=<?php echo htmlspecialchars(stripslashes($_COOKIE['code'])); ?>">Of ga terug naar je opgeslagen pagina</a><br><?php } ?> -->
-                <h4>Maak een nieuw profiel</h4>
+                <h4>Voeg rooster toe</h4>
                 <form method="post" action="newuser.php">
                     <div class="row">
                         <div class="col-md-4">
@@ -38,7 +48,7 @@ $changes = json_decode(file_get_contents('../data/changes_web.json'), true);
                             <input class="form-control" type="text" placeholder="URL" name="url">
                         </div>
                         <div class="col-md-4">
-                            <input class="btn btn-primary" type="submit" name="submit" value="Maak profiel">
+                            <input class="btn btn-primary" type="submit" name="submit" value="Voeg toe">
                             <a class="btn btn-info" href="info.php">Meer informatie</a>
                         </div>
                     </div>
@@ -66,6 +76,9 @@ $changes = json_decode(file_get_contents('../data/changes_web.json'), true);
                         </tr>
                     <?php } ?>
                 </table>
+                <hr>
+                Let op. Momenteel worden enkel de volgende groepen ondersteund. Staat jouw groep er niet tussen? Voeg dan jouw eigen rooster toe via het formulier bovenaan deze pagina.<br>
+                <?php foreach ($groups as $group) { echo $group." | "; } ?>
                 <hr>
                 <p>Let op: Aan dit project wordt nog steeds gewerkt. Voortgang is te zien op de <a href="https://github.com/underlyingglitch/scheduler" target="_blank">GitHub pagina</a></p>
             </div>
