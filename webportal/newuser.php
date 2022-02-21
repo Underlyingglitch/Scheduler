@@ -6,7 +6,7 @@ if (!isset($_POST['submit'])) {
 
 include "functions.php";
 
-$scheduler = new Scheduler();
+$scheduler = new Scheduler(null, false);
 
 $code = $scheduler->new_code();
 $name = htmlspecialchars(stripslashes($_POST['name']));
