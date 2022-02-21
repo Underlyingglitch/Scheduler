@@ -19,13 +19,13 @@ if __name__ == "__main__":
         f.write(json.dumps(users))
     
     # Duplicate combined.json to calculate changes
-    shutil.copy('./events/combined.json', './events/combined.old.json')
+    shutil.copy('./data/combined.json', './data/combined.old.json')
 
     # Merge files to combined.json
     functions.mergeFiles(users)
 
     # Calculate changes
-    # changes = functions.calculateChanges()
+    changes = functions.calculateChanges()
 
     # Prepare and send out updates to Discord
-    # functions.prepareUpdate(changes)
+    functions.prepareUpdate(changes)

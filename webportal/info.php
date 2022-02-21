@@ -27,7 +27,7 @@ include "functions.php";
                 <img class="img-fluid" src="dist/img/step4.png" \>
                 <p>Stap 5: Vul je naam in en klik op "Maak profiel"</p><br>
                 <img class="img-fluid" src="dist/img/step5.png" \>
-                <p>Als je deze stappen zorgvuldig gevolgd hebt zie je nu je persoonlijke code op het scherm staan. Bewaar deze code goed! Ieder half uur worden de roosters van alle aangemelde leerlingen vernieuwd. Kijk dus pas na het hele of halve uur op je persoonlijke roosterpagina. Kom je er dan nog steeds niet uit? Stuur me dan een mailtje op <a href="mailto:st126151@leerling.stellamariscollege.nl">st126151@leerling.stellamariscollege.nl</a></p>
+                <p>Als je deze stappen zorgvuldig gevolgd hebt zie je nu je persoonlijke code op het scherm staan. Bewaar deze code goed! Ieder half uur worden de roosters van alle aangemelde leerlingen vernieuwd. Vragen? <a href="mailto:st126151@leerling.stellamariscollege.nl">st126151@leerling.stellamariscollege.nl</a></p>
             </div>
         </main>
     </body>

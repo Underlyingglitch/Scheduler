@@ -102,8 +102,6 @@ def get_data(_user):
                     "dertig": convert_period(str(component.dtstart.valueRepr()).split()[1], "30"),
                     "vijftig": convert_period(str(component.dtstart.valueRepr()).split()[1], "50")
                 }
-                print('next event')
-    print('Dumping data')
     with open(path, 'w') as f:
         f.write(json.dumps(userdata))
     user = _user
@@ -120,6 +118,7 @@ def dateInRange(s, e, x):
 
 def mergeFiles(_users):
     events = {}
+    groups = []
     for user in _users:
         # Get user file
         with open('./events/'+user['code']+'.json', 'r') as f:
@@ -127,44 +126,52 @@ def mergeFiles(_users):
             for key, event in data.items():
                 if dateInRange(datetime.now().strftime('%Y-%m-%d'), (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d'), datetime.strptime(event['start'].split(' ')[0], '%Y-%m-%d').strftime('%Y-%m-%d')) and event['status'] != "CONFIRMED":
                     events[key] = event
-    with open('./events/combined.json', 'w') as f:
+                if event['group'] not in groups:
+                    groups.append(event['group'])
+    with open('./data/combined.json', 'w') as f:
         f.write(json.dumps(events))
+    with open('./data/groups.json', 'w') as f:
+        f.write(json.dumps(groups))
 
 
 def calculateChanges():
     old_data = {}
     changes = []
-    with open('./events/combined.old.json', 'r') as f:
+    with open('./data/combined.old.json', 'r') as f:
         old_data = json.loads(f.read())
     
-    with open('./events/combined.json', 'r') as f:
+    with open('./data/combined.json', 'r') as f:
         for key, event in json.loads(f.read()).items():
             if key in old_data:
                 if (old_data[key]['status'] == event['status']):
                     continue
             changes.append(event)
-
-    print(changes)
+    return changes
+    
 
 def prepareUpdate(_changes):
     messages = []
-    for i,change in _changes.items():
+    for change in _changes:
         start = change['start'].split('+')[0].split(' ')[1].split(':')
+        end = change['end'].split('+')[0].split(' ')[1].split(':')
         desc = change['description'].split(' ')
+        start_time = ':'.join([str(int(start[0])+1), str(start[1])])
+        end_time = ':'.join([str(int(end[0])+1), str(end[1])])
         if "docent is vervangen" in change['description']:
             message = {}
             original_teacher = change['summary'][change['summary'].find('(')+5:change['summary'].find(').')].upper()
-            message['color'] = "#ff6f00"
+            message['color'] = "#ffff00"
             message['title'] = "Docent vervangen"
             message['description'] = desc[0]+' '+change['group']
+            message['time'] = f'{start_time}-{end_time}'
             message['vak'] = desc[0]
+            message['teacher'] = original_teacher
             message['fields'] = [
                 {"name": "Lesuur", "value": change['vijftig']},
-                {"name": "Tijd", "value": ':'.join([
-                    str(int(start[0])+1),
-                    str(start[1])])},
+                {"name": "Tijd", "value": f'{start_time}-{end_time}'},
                 {"name": "Originele docent", "value": original_teacher},
-                {"name": "Nieuwe docent", "value": re.sub('(\(|\))', '', desc[3])}
+                {"name": "Nieuwe docent", "value": re.sub('(\(|\))', '', desc[3])},
+                {"name": "Datum", "value": change['start'].split('+')[0].split(' ')[0]}
             ]
             messages.append(message)
         if "Les vervalt" in change['description']:
@@ -172,30 +179,34 @@ def prepareUpdate(_changes):
             message['color'] = "#ff0000"
             message['title'] = "Les vervalt"
             message['description'] = desc[1]+' '+change['group']
+            message['time'] = f'{start_time}-{end_time}'
             message['vak'] = desc[1]
+            message['teacher'] = change['teacher']
             message['fields'] = [
                 {"name": "Lesuur", "value": change['vijftig']},
-                {"name": "Tijd", "value": ':'.join([
-                    str(int(start[0])+1),
-                    str(start[1])])},
-                {"name": "Docent", "value": re.sub('(\(|\))', '', desc[4])}
+                {"name": "Tijd", "value": f'{start_time}-{end_time}'},
+                {"name": "Docent", "value": re.sub('(\(|\))', '', desc[4])},
+                {"name": "Datum", "value": change['start'].split('+')[0].split(' ')[0]}
             ]
             messages.append(message)
         if "lokaal is gewijzigd" in change['description']:
             message = {}
             old_room = change['summary'].split(')')[1].split(' ')[-1]
-            message['color'] = "#ff6f00"
+            message['color'] = "#0000ff"
             message['title'] = "Lokaal gewijzigd"
             message['description'] = desc[1]+' '+change['group']
+            message['time'] = f'{start_time}-{end_time}'
             message['vak'] = desc[1]
+            message['teacher'] = change['teacher']
             message['fields'] = [
                 {"name": "Lesuur", "value": change['vijftig']},
-                {"name": "Tijd", "value": ':'.join([
-                    str(int(start[0])+1),
-                    str(start[1])])},
+                {"name": "Tijd", "value": f'{start_time}-{end_time}'},
                 {"name": "Oude lokaal", "value": old_room},
-                {"name": "Nieuwe lokaal", "value": change['location'].split(' ')[1]}
+                {"name": "Nieuwe lokaal", "value": change['location'].split(' ')[1]},
+                {"name": "Datum", "value": change['start'].split('+')[0].split(' ')[0]}
             ]
-            
+            messages.append(message)
     with open('./data/changes.json', 'w') as f:
+        f.write(json.dumps(messages))
+    with open('./data/changes_web.json', 'w') as f:
         f.write(json.dumps(messages))

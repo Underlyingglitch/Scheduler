@@ -1,5 +1,7 @@
 <?php
 include "functions.php";
+
+$changes = json_decode(file_get_contents('../data/changes_web.json'), true);
 ?>
 
 <html>
@@ -14,7 +16,7 @@ include "functions.php";
                 <h1 class="text-center">Welkom bij Scheduler</h1>
                 <br>
                 <?php if (isset($_GET['invalid'])) { echo "<p style='color:red;'>Ongeldige code!</p>"; } elseif (isset($_GET['notready'])) { echo "<p style='color:red;'>Code is geldig, maar rooster is nog niet geladen. Probeer over een half uur opnieuw!</p>"; } ?>
-                <form action="view.php" method="get">
+                <!-- <form action="view.php" method="get">
                     <div class="row">
                         <div class="col-md-3">
                             <input class="form-control col-md-2" type="text" name="user" placeholder="Persoonlijke code">
@@ -24,9 +26,8 @@ include "functions.php";
                         </div>
                     </div>
                     <input class="form-check-input" type="checkbox" name="save"> Bewaar code (gebruikt cookies)
-                </form>
-                <?php if (isset($_COOKIE['code'])) { ?><a href="view.php?user=<?php echo $_COOKIE['code']; ?>">Of ga terug naar je opgeslagen pagina</a><br><?php } ?>
-                <hr>
+                </form> -->
+                <!-- <?php if (isset($_COOKIE['code'])) { ?><a href="view.php?user=<?php echo htmlspecialchars(stripslashes($_COOKIE['code'])); ?>">Of ga terug naar je opgeslagen pagina</a><br><?php } ?> -->
                 <h4>Maak een nieuw profiel</h4>
                 <form method="post" action="newuser.php">
                     <div class="row">
@@ -42,6 +43,29 @@ include "functions.php";
                         </div>
                     </div>
                 </form>
+                <hr>
+                <table class="table">
+                    <tr>
+                        <th>Vak</th>
+                        <th>Tijd</th>
+                        <th>Soort wijziging</th>
+                        <th>Opmerking</th>
+                    </tr>
+                    <?php foreach ($changes as $change) { ?>
+                        <tr style="background-color: <?php echo hex2rgba($change['color'], 0.2); ?>">
+                            <td><?php echo $change['description']." (".$change['teacher'].")"; ?></td>
+                            <td><?php echo $change['time']; ?></td>
+                            <td><?php echo $change['title']; ?></td>
+                            <td>
+                                <?php if($change['title'] == "Docent vervangen"){
+                                    echo "<s>".$change['fields'][2]['value']."</s> ".$change['fields'][3]['value'];
+                                }elseif($change['title'] == "Lokaal gewijzigd"){
+                                    echo "<s>".$change['fields'][2]['value']."</s> ".$change['fields'][3]['value'];
+                                } ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </table>
                 <hr>
                 <p>Let op: Aan dit project wordt nog steeds gewerkt. Voortgang is te zien op de <a href="https://github.com/underlyingglitch/scheduler" target="_blank">GitHub pagina</a></p>
             </div>

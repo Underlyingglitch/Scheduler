@@ -2,7 +2,7 @@ const fs = require('fs');
 // require('log-timestamp');
 
 const {Client, MessageEmbed} = require("discord.js");
-const config = require("./config.json");
+const config = require("../data/config.json");
 
 const prefix = "!";
 
@@ -18,39 +18,60 @@ bot.on("messageCreate", function(message) {
     const commandBody = message.content.slice(prefix.length);
     const args = commandBody.split(' ');
     const command = args.shift().toLowerCase();
-    
 
+    if (config.debug == "DEV") {
+        server = "851114680994103336";
+    } else {
+        server = "795555470164754482";
+    }
+
+    message.reply('Commands are not working yet');
 });
 
-fs.watchFile('../events/updates.json', () => {
+var readJson = (path, cb) => {fs.readFile(require.resolve(path), (err, data) => {if (err){cb(err)}else{cb(null, JSON.parse(data))}})}
+
+fs.watchFile('../data/changes.json', () => {
     console.log('File changed');
 
-    const notify_channel_id = config['channels']['851114680994103336']['notify'];
-    const notify_channel = bot.channels.cache.get(notify_channel_id);
+    if (config.debug == "DEV") {
+        server = "851114680994103336";
+    } else {
+        server = "795555470164754482";
+    }
 
-    var currentdate = new Date();
-    var datetime = "Laatste update: " + currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " @ "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
-    notify_channel.setTopic(datetime)
-    .then(updated => console.log(`Channel's new topic is ${updated.topic}`))
-    .catch(console.error);
-
-    var updates = require("../events/updates.json");
-
-    updates.forEach(update => {
-        const embed = new MessageEmbed()
-            .setColor(update.color)
-            .setTitle(update.title)
-            .setDescription(update.description);
-        update.fields.forEach(field => {
-            embed.addField(field.name, field.value, true);
-        });
-        const ping = config.roles[update.vak];
-        notify_channel.send({content: `<@&${ping}>`, embeds: [embed]});
-        
+    readJson('../data/changes.json', (err, updates) => {
+        if (updates.length > 0) {
+            console.log('Sending '+updates.length+' messages');
+            const notify_channel_id = config['servers'][server]['notify'];
+            const notify_channel = bot.channels.cache.get(notify_channel_id);
+            updates.forEach(update => {
+                const embed = new MessageEmbed()
+                    .setColor(update.color.toString())
+                    .setTitle(update.title.toString())
+                    .setDescription(update.description.toString());
+                update.fields.forEach(field => {
+                    embed.addField(field.name.toString(), field.value.toString(), true);
+                });
+                const ping = config['servers'][server]['roles'][update.vak];
+                notify_channel.send({content: `<@&${ping}>`, embeds: [embed]});
+                
+            });
+            console.log('Resetting changes.json');
+            fs.writeFileSync('../data/changes.json', '[]');
+            var currentdate = new Date();
+            var datetime = "Laatste update: " + currentdate.getDate() + "/"
+                        + (currentdate.getMonth()+1)  + "/" 
+                        + currentdate.getFullYear() + " @ "  
+                        + currentdate.getHours() + ":"  
+                        + currentdate.getMinutes() + ":" 
+                        + currentdate.getSeconds();
+            notify_channel.setTopic(datetime)
+            .then(updated => console.log(`Channel's new topic is ${updated.topic}`))
+            .catch(console.error);
+        } else {
+            console.log('Empty');
+        }
     });
+
+    
 });
