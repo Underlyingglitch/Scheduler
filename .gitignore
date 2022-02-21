@@ -1,6 +1,8 @@
 node_modules
 events
 config
+data
 test.php
 test.json
+test.py
 discord_bot/config.json
