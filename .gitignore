@@ -2,6 +2,7 @@ node_modules
 events
 config
 data
+__pycache__
 test.php
 test.json
 test.py
