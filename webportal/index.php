@@ -1,16 +1,18 @@
 <?php
 include "functions.php";
 
-$changes = json_decode(file_get_contents('../data/changes_web.json'), true);
-$groups = [];
+$tmp = [];
+foreach (json_decode(file_get_contents('../data/groups.json'),true) as $x){foreach(explode(';',$x) as $b){$tmp[]=$b;}}
 
-foreach (json_decode(file_get_contents('../data/groups.json'), true) as $group) {
-    $a = explode(';', $group);
-    foreach($a as $b) {
-        $groups[] = $b;
-    }
+$groups = [];
+foreach ($tmp as $y){$groups[explode('.',$y)[0]][]=$y;}
+
+ksort($groups);
+
+$changes = [];
+foreach (json_decode(file_get_contents('../data/changes_web.json'),true) as $x){
+    $changes[$x['date']][]=$x;
 }
-sort($groups);
 
 ?>
 
@@ -57,28 +59,45 @@ sort($groups);
                 <table class="table">
                     <tr>
                         <th>Vak</th>
+                        <th>Lesuur</th>
                         <th>Tijd</th>
                         <th>Soort wijziging</th>
                         <th>Opmerking</th>
                     </tr>
-                    <?php foreach ($changes as $change) { ?>
-                        <tr style="background-color: <?php echo hex2rgba($change['color'], 0.2); ?>">
-                            <td><?php echo $change['description']." (".$change['teacher'].")"; ?></td>
-                            <td><?php echo $change['time']; ?></td>
-                            <td><?php echo $change['title']; ?></td>
-                            <td>
-                                <?php if($change['title'] == "Docent vervangen"){
-                                    echo "<s>".$change['fields'][2]['value']."</s> ".$change['fields'][3]['value'];
-                                }elseif($change['title'] == "Lokaal gewijzigd"){
-                                    echo "<s>".$change['fields'][2]['value']."</s> ".$change['fields'][3]['value'];
-                                } ?>
-                            </td>
-                        </tr>
+                    <?php foreach ($changes as $date => $change_group) { ?>
+                        <tr><th colspan="5"><?php echo date('d-m-Y',strtotime($date)); ?></th></tr>
+                        <?php foreach ($change_group as $change) { ?>
+                            <tr style="background-color: <?php echo hex2rgba($change['color'], 0.2); ?>">
+                                <td><?php echo $change['description']." (".$change['teacher'].")"; ?></td>
+                                <td><?php echo "?"; ?></td>
+                                <td><?php echo $change['time']; ?></td>
+                                <td><?php echo $change['title']; ?></td>
+                                <td>
+                                    <?php if($change['title'] == "Docent vervangen"){
+                                        echo "<s>".$change['fields'][2]['value']."</s> ".$change['fields'][3]['value'];
+                                    }elseif($change['title'] == "Lokaal gewijzigd"){
+                                        echo "<s>".$change['fields'][2]['value']."</s> ".$change['fields'][3]['value'];
+                                    } ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
                     <?php } ?>
                 </table>
                 <hr>
                 Let op. Momenteel worden enkel de volgende groepen ondersteund. Staat jouw groep er niet tussen? Voeg dan jouw eigen rooster toe via het formulier bovenaan deze pagina.<br>
-                <?php foreach ($groups as $group) { echo $group." | "; } ?>
+                <div class="row">
+                    <?php foreach ($groups as $year => $group_group) { ?>
+                        <div class="col-md-2">
+                            <?php echo $year; ?>
+                            <ul>
+                                <?php foreach ($group_group as $group) { ?>
+                                    <li><?php echo $group; ?></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    <?php } ?>
+                </div>
+                <?php //foreach ($groups as $group) { if (strpos($group, '.')) { echo $group." | "; } } ?>
                 <hr>
                 <p>Let op: Aan dit project wordt nog steeds gewerkt. Voortgang is te zien op de <a href="https://github.com/underlyingglitch/scheduler" target="_blank">GitHub pagina</a></p>
             </div>

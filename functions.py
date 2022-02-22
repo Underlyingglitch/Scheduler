@@ -38,7 +38,6 @@ def convert_period(x, y):
 
 
 def get_data(_user):
-    print('Executing for user: '+_user['code'])
     url = _user['url']
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
     req = Request(url=url, headers=headers)
@@ -77,6 +76,15 @@ def get_data(_user):
                     s = component.description.valueRepr()
                     group = s[s.find('(')+1:s.find(');')]
                     status = "TENTATIVE"
+                elif desc[0] == '[Ongeldig]':
+                    summary = "[X] "
+                    n = 3
+                    if desc[1] == "[!]":
+                        n=4
+                    location = "Lokaal " + desc[n]
+                    teacher = desc[n+1]
+                    group = desc[n-1]
+                    status = "CANCELLED"
                 else:
                     summary = ""
                     location = "Lokaal " + desc[2]
@@ -164,6 +172,9 @@ def prepareUpdate(_changes):
             message['title'] = "Docent vervangen"
             message['description'] = desc[0]+' '+change['group']
             message['time'] = f'{start_time}-{end_time}'
+            message['timetable']['dertig']=change['dertig']
+            message['timetable']['vijftig']=change['vijftig']
+            message['date'] = change['start'].split('+')[0].split(' ')[0]
             message['vak'] = desc[0]
             message['teacher'] = original_teacher
             message['fields'] = [
@@ -171,7 +182,7 @@ def prepareUpdate(_changes):
                 {"name": "Tijd", "value": f'{start_time}-{end_time}'},
                 {"name": "Originele docent", "value": original_teacher},
                 {"name": "Nieuwe docent", "value": re.sub('(\(|\))', '', desc[3])},
-                {"name": "Datum", "value": change['start'].split('+')[0].split(' ')[0]}
+                {"name": "Datum", "value": datetime.strptime(change['start'].split('+')[0].split(' ')[0], '%Y-%m-%d').strftime('%d-%m-%y')}
             ]
             messages.append(message)
         if "Les vervalt" in change['description']:
@@ -180,13 +191,16 @@ def prepareUpdate(_changes):
             message['title'] = "Les vervalt"
             message['description'] = desc[1]+' '+change['group']
             message['time'] = f'{start_time}-{end_time}'
+            message['timetable']['dertig']=change['dertig']
+            message['timetable']['vijftig']=change['vijftig']
+            message['date'] = change['start'].split('+')[0].split(' ')[0]
             message['vak'] = desc[1]
             message['teacher'] = change['teacher']
             message['fields'] = [
                 {"name": "Lesuur", "value": change['vijftig']},
                 {"name": "Tijd", "value": f'{start_time}-{end_time}'},
                 {"name": "Docent", "value": re.sub('(\(|\))', '', desc[4])},
-                {"name": "Datum", "value": change['start'].split('+')[0].split(' ')[0]}
+                {"name": "Datum", "value": datetime.strptime(change['start'].split('+')[0].split(' ')[0], '%Y-%m-%d').strftime('%d-%m-%y')}
             ]
             messages.append(message)
         if "lokaal is gewijzigd" in change['description']:
@@ -196,6 +210,9 @@ def prepareUpdate(_changes):
             message['title'] = "Lokaal gewijzigd"
             message['description'] = desc[1]+' '+change['group']
             message['time'] = f'{start_time}-{end_time}'
+            message['timetable']['dertig']=change['dertig']
+            message['timetable']['vijftig']=change['vijftig']
+            message['date'] = change['start'].split('+')[0].split(' ')[0]
             message['vak'] = desc[1]
             message['teacher'] = change['teacher']
             message['fields'] = [
@@ -203,10 +220,15 @@ def prepareUpdate(_changes):
                 {"name": "Tijd", "value": f'{start_time}-{end_time}'},
                 {"name": "Oude lokaal", "value": old_room},
                 {"name": "Nieuwe lokaal", "value": change['location'].split(' ')[1]},
-                {"name": "Datum", "value": change['start'].split('+')[0].split(' ')[0]}
+                {"name": "Datum", "value": datetime.strptime(change['start'].split('+')[0].split(' ')[0], '%Y-%m-%d').strftime('%d-%m-%y')}
             ]
             messages.append(message)
-    with open('./data/changes.json', 'w') as f:
-        f.write(json.dumps(messages))
+    # with open('./data/changes.json', 'w') as f:
+    #     f.write(json.dumps(messages))
+    with open('./data/changes_web.json', 'r') as f:
+        current_changes = json.loads(f.read())
+        for c in current_changes:
+            if (str(datetime.strptime(c['date'], '%Y-%m-%d').strftime('%Y-%m-%d')) != str(date.today() - timedelta(days=1))):
+                messages.append(c)
     with open('./data/changes_web.json', 'w') as f:
         f.write(json.dumps(messages))
