@@ -67,6 +67,7 @@ def get_data(_user):
                         n=4
                     location = "Lokaal " + desc[n]
                     teacher = desc[n+1]
+                    vak = desc[n-2]
                     group = desc[n-1]
                     status = "CANCELLED"
                 elif desc[0] == '[!]':
@@ -75,6 +76,21 @@ def get_data(_user):
                     teacher = component.description.valueRepr().split(');')[1].split(' ')[2]
                     s = component.description.valueRepr()
                     group = s[s.find('(')+1:s.find(');')]
+                    vak = desc[1]
+                    # for i in range(len(desc)):
+                    #     try:
+                    #         if (desc[i+1] == f"({group});"):
+                    #             print(desc[i])
+                    #             vak = desc[i]
+                    #     except:
+                    #         print(f'Error while looking for ({group}); in:')
+                    #         print(desc)
+                    #         print(f'But found: {desc[i]}')
+                    #         exit()
+                        
+                        # if desc[i+1] == f"({group});":
+                        #     vak = desc[i]
+                        #     break
                     status = "TENTATIVE"
                 elif desc[0] == '[Ongeldig]':
                     summary = "[X] "
@@ -83,12 +99,14 @@ def get_data(_user):
                         n=4
                     location = "Lokaal " + desc[n]
                     teacher = desc[n+1]
+                    vak = desc[n-2]
                     group = desc[n-1]
                     status = "CANCELLED"
                 else:
                     summary = ""
                     location = "Lokaal " + desc[2]
                     teacher = desc[3]
+                    vak = desc[0]
                     group = desc[1]
                     status = "CONFIRMED"
                 if "docent is vervangen" in component.description.valueRepr():
@@ -97,11 +115,19 @@ def get_data(_user):
                 del desc[0:4]
                 summary += ' ' + ' '.join(desc)
                 id = component.uid.valueRepr()
+                group = re.sub("(\(|\)|\;|\\n|\\r)", "", group).replace(' ', ';')
+                if len(group) == 4:
+                    if (group[0:2] == "vw"):
+                        group = group.replace('vw', 'vwo')
+                        group = group[0:len(group)-1]+'.'+group[-1]+'('+vak+')'
+                    else:
+                        group = group+"."+vak
                 userdata[id] = {
                     "summary": summary,
                     "location": location,
                     "teacher": re.sub("(\(|\)|\\n|\\r)", "", teacher),
-                    "group": re.sub("(\(|\)|\;|\\n|\\r)", "", group).replace(' ', ';'),
+                    "group": group,
+                    "vak": vak,
                     "status": status,
                     "start": str(component.dtstart.valueRepr()),
                     "end": str(component.dtend.valueRepr()),
@@ -167,21 +193,28 @@ def prepareUpdate(_changes):
         end_time = ':'.join([str(int(end[0])+1), str(end[1])])
         if "docent is vervangen" in change['description']:
             message = {}
-            original_teacher = change['summary'][change['summary'].find('(')+5:change['summary'].find(').')].upper()
+            original_teacher = re.search('(was [a-z]{3}[0-9]{2})', change['summary']).group(0).split(' ')[1].upper()
             message['color'] = "#ffff00"
             message['title'] = "Docent vervangen"
-            message['description'] = desc[0]+' '+change['group']
+            if desc[0] == "[!]":
+                message['vak'] = desc[1]
+            else:
+                message['vak'] = desc[0]
+            message['description'] = message['vak']+' '+change['group']
             message['time'] = f'{start_time}-{end_time}'
-            message['timetable']['dertig']=change['dertig']
-            message['timetable']['vijftig']=change['vijftig']
+            message['dertig']=change['dertig']
+            message['vijftig']=change['vijftig']
             message['date'] = change['start'].split('+')[0].split(' ')[0]
-            message['vak'] = desc[0]
             message['teacher'] = original_teacher
+            try:
+                new_teacher = re.search('([A-Z]{3}[0-9]{2})', change['description']).group(0)
+            except:
+                new_teacher = re.search('([A-Z]{5}[0-9]{1})', change['description']).group(0)
             message['fields'] = [
                 {"name": "Lesuur", "value": change['vijftig']},
                 {"name": "Tijd", "value": f'{start_time}-{end_time}'},
                 {"name": "Originele docent", "value": original_teacher},
-                {"name": "Nieuwe docent", "value": re.sub('(\(|\))', '', desc[3])},
+                {"name": "Nieuwe docent", "value": new_teacher},
                 {"name": "Datum", "value": datetime.strptime(change['start'].split('+')[0].split(' ')[0], '%Y-%m-%d').strftime('%d-%m-%y')}
             ]
             messages.append(message)
@@ -191,8 +224,8 @@ def prepareUpdate(_changes):
             message['title'] = "Les vervalt"
             message['description'] = desc[1]+' '+change['group']
             message['time'] = f'{start_time}-{end_time}'
-            message['timetable']['dertig']=change['dertig']
-            message['timetable']['vijftig']=change['vijftig']
+            message['dertig']=change['dertig']
+            message['vijftig']=change['vijftig']
             message['date'] = change['start'].split('+')[0].split(' ')[0]
             message['vak'] = desc[1]
             message['teacher'] = change['teacher']
@@ -210,8 +243,8 @@ def prepareUpdate(_changes):
             message['title'] = "Lokaal gewijzigd"
             message['description'] = desc[1]+' '+change['group']
             message['time'] = f'{start_time}-{end_time}'
-            message['timetable']['dertig']=change['dertig']
-            message['timetable']['vijftig']=change['vijftig']
+            message['dertig']=change['dertig']
+            message['vijftig']=change['vijftig']
             message['date'] = change['start'].split('+')[0].split(' ')[0]
             message['vak'] = desc[1]
             message['teacher'] = change['teacher']
@@ -223,8 +256,8 @@ def prepareUpdate(_changes):
                 {"name": "Datum", "value": datetime.strptime(change['start'].split('+')[0].split(' ')[0], '%Y-%m-%d').strftime('%d-%m-%y')}
             ]
             messages.append(message)
-    # with open('./data/changes.json', 'w') as f:
-    #     f.write(json.dumps(messages))
+    with open('./data/changes.json', 'w') as f:
+        f.write(json.dumps(messages))
     with open('./data/changes_web.json', 'r') as f:
         current_changes = json.loads(f.read())
         for c in current_changes:

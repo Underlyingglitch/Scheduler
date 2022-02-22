@@ -14,6 +14,12 @@ foreach (json_decode(file_get_contents('../data/changes_web.json'),true) as $x){
     $changes[$x['date']][]=$x;
 }
 
+// foreach ($changes as $i => $x) {
+//     $y = $x;
+//     array_multisort(array_column($y, 'time'), SORT_DESC, $y);
+//     $changes[$i] = $y;
+// }
+
 ?>
 
 <html>
@@ -21,6 +27,7 @@ foreach (json_decode(file_get_contents('../data/changes_web.json'),true) as $x){
         <title>Scheduler</title>
         <!-- Bootstrap core CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     </head>
     <body>
         <main class="container">
@@ -56,6 +63,8 @@ foreach (json_decode(file_get_contents('../data/changes_web.json'),true) as $x){
                     </div>
                 </form>
                 <hr>
+                <h4>Wijzigingen</h4>
+                <p id="updatetimer">Volgende update in: </p>
                 <table class="table">
                     <tr>
                         <th>Vak</th>
@@ -66,10 +75,18 @@ foreach (json_decode(file_get_contents('../data/changes_web.json'),true) as $x){
                     </tr>
                     <?php foreach ($changes as $date => $change_group) { ?>
                         <tr><th colspan="5"><?php echo date('d-m-Y',strtotime($date)); ?></th></tr>
+                        <?php
+                        if (in_array(0, array_column($change_group, 'vijftig'))) {
+                            $schedule = 'dertig';
+                        } else {
+                            $schedule = 'vijftig';
+                        }
+                        array_multisort(array_column($change_group, $schedule), SORT_ASC, $change_group);
+                        ?>
                         <?php foreach ($change_group as $change) { ?>
                             <tr style="background-color: <?php echo hex2rgba($change['color'], 0.2); ?>">
                                 <td><?php echo $change['description']." (".$change['teacher'].")"; ?></td>
-                                <td><?php echo "?"; ?></td>
+                                <td><?php echo $change[$schedule]; ?></td>
                                 <td><?php echo $change['time']; ?></td>
                                 <td><?php echo $change['title']; ?></td>
                                 <td>
@@ -103,4 +120,34 @@ foreach (json_decode(file_get_contents('../data/changes_web.json'),true) as $x){
             </div>
         </main>
     </body>
+    <script>
+        $(document).ready(() => {
+            function padLeadingZeros(num, size) {
+                var s = num+"";
+                while (s.length < size) s = "0" + s;
+                return s;
+            }
+            function redirect() {
+                setTimeout(() => {
+                    window.location = window.location.href;
+                }, 10000);
+            }
+            function getTimer() {
+                var now = new Date();
+                if ((now.getMinutes() == 30 || now.getMinutes() == 0) && (now.getSeconds() == 0 || now.getSeconds() == 1)) {
+                    redirect();
+                }
+                if ((30 - now.getMinutes() - 1) < 0) {
+                    minutes = 60 - now.getMinutes() - 1;
+                } else {
+                    minutes = 30 - now.getMinutes() - 1;
+                }
+                return padLeadingZeros(minutes, 2) + ":" + padLeadingZeros(60 - now.getSeconds(), 2);
+            }
+            $('#updatetimer').html('Volgende update in: '+getTimer());
+            setInterval(() => {
+                $('#updatetimer').html('Volgende update in: '+getTimer());
+            }, 1000);
+        });
+    </script>
 </html>
