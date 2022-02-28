@@ -2,7 +2,7 @@ import json
 import shutil
 from datetime import datetime, timedelta
 
-import functions
+import scheduler, functions
 
 
 users = []
@@ -13,7 +13,7 @@ if __name__ == "__main__":
         # For each registered user
         for user in json.loads(f.read()):
             # Get new user data
-            users.append(functions.get_data(user))
+            users.append(scheduler.get_data(user))
     # Update users file with new "last_updated" value
     with open('./config/users.json', 'w') as f:
         f.write(json.dumps(users))
@@ -25,7 +25,8 @@ if __name__ == "__main__":
     functions.mergeFiles(users)
 
     # Calculate changes
-    changes = functions.calculateChanges()
+    # changes = functions.calculateChanges()
+    changes = scheduler.calculateChanges()
 
     # Prepare and send out updates to Discord
-    functions.prepareUpdate(changes)
+    scheduler.prepareUpdate(changes)

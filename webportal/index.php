@@ -13,6 +13,7 @@ $changes = [];
 foreach (json_decode(file_get_contents('../data/changes_web.json'),true) as $x){
     $changes[$x['date']][]=$x;
 }
+ksort($changes);
 
 // foreach ($changes as $i => $x) {
 //     $y = $x;
@@ -28,6 +29,18 @@ foreach (json_decode(file_get_contents('../data/changes_web.json'),true) as $x){
         <!-- Bootstrap core CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+        <!-- Hotjar Tracking Code for https://scheduler.rickokkersen.ga -->
+        <script>
+            (function(h,o,t,j,a,r){
+                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                h._hjSettings={hjid:2845335,hjsv:6};
+                a=o.getElementsByTagName('head')[0];
+                r=o.createElement('script');r.async=1;
+                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                a.appendChild(r);
+            })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+        </script>
     </head>
     <body>
         <main class="container">
