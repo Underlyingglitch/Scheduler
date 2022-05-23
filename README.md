@@ -1,5 +1,8 @@
 # Scheduler Project
 
+## Discontinued
+Wordt voorlopig niet verder ontwikkeld. In plaats daarvan ga ik me richten op het vele grotere [FusionApp Project](https://github.com/FusionApp-Project).
+
 Met dit project probeer ik de lesroosters makkelijker zichtbaar te maken voor leerlingen. Iedere leerling krijgt zijn eigen persoonlijke pagina en kan zelf kiezen of hij/zij deze pagina met anderen deelt. Instellen van de persoonlijke pagina is erg makkelijk en is een eenmalige stap. De roosters worden iedere 30 minuten geupdate en lessen die uitvallen/wijzigingen zijn duidelijk aangegeven.
 
 ## Let op
